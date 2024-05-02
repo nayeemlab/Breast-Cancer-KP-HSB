@@ -39,10 +39,10 @@ BrData$Age <- BrData$X3..Age..in.whole.year.
 
 BrData$AgeCat[BrData$Age < 40]  = 1
 BrData$AgeCat[BrData$Age >= 40 & BrData$Age <=  49]  = 2
-BrData$AgeCat[BrData$Age >= 50 & BrData$Age <= 59] = 3
-BrData$AgeCat[BrData$Age >= 60] = 4
+BrData$AgeCat[BrData$Age >= 50 & BrData$Age <= 59] = 2
+BrData$AgeCat[BrData$Age >= 60] = 3
 
-BrData$AgeCat <- factor(BrData$AgeCat,levels=c(1,2,3,4),labels = c('<40','40-49','50-59','>=60'))
+BrData$AgeCat <- factor(BrData$AgeCat,levels=c(1,2,3),labels = c('<40','40-59','>=60'))
 BrData$AgeCat
 
 summary(BrData$AgeCat)
@@ -371,7 +371,73 @@ x
 round(prop.table(x),4)*100
 
 
+#Family a support  
+#4.1 Who is the person you talked first about your health problem? (Select ONE)
+BrData$FamilySupport_firstTalked <- factor(BrData$X4.1.Who.is.the.person.you.talked.first.about.your.health.problem.)
+BrData$FamilySupport_firstTalked <- factor(BrData$FamilySupport_firstTalked,
+                        levels=c("Friend",   "Husband",    "Mother", "Neighbour",
+                                 "Other",   "Sibling", "son or daughter"),
+                        labels = c("Other",   "Husband",    "Mother", "Neighbour",
+                                   "Other",   "Other", "son or daughter"))
+summary(BrData$FamilySupport_firstTalked)
+x <- table(BrData$FamilySupport_firstTalked)
+x
+round(prop.table(x),4)*100
 
+#4.2 Who recommended you to consult with a doctor?  (Select ONE)
+BrData$FamilySupport_WhoRecommendDoc <- factor(BrData$X4.2.Who.recommended.you.to.consult.with.a.doctor.)
+BrData$FamilySupport_WhoRecommendDoc <- factor(BrData$FamilySupport_WhoRecommendDoc,
+                                           levels=c("Friend", "herself",  "Husband",    "Mother", "Neighbour",
+                                                    "Other",   "Sibling", "son or daughter"),
+                                           labels = c("Other",  "herself", "Husband",    "Other", "Neighbour",
+                                                      "Other",   "Other", "son or daughter"))
+summary(BrData$FamilySupport_WhoRecommendDoc)
+x <- table(BrData$FamilySupport_WhoRecommendDoc)
+x
+round(prop.table(x),4)*100
+
+#4.3 Did you fear or uncomfortable to tell about the problem to your spouse? Yes/No
+BrData$FamilySupport_uncomfortabletoShareHusband <- factor(BrData$X4.3.Did.you.fear.or.uncomfortable.to.tell.about.the.problem.to.your.spouse.)
+BrData$FamilySupport_uncomfortabletoShareHusband <- factor(BrData$FamilySupport_uncomfortabletoShareHusband,
+                        levels=c("Yes","No"),
+                        labels = c("Yes","No"))
+summary(BrData$FamilySupport_uncomfortabletoShareHusband)
+x <- table(BrData$FamilySupport_uncomfortabletoShareHusband)
+x
+round(prop.table(x),4)*100
+
+#4.4 Did you receive support from spouse after diagnosis?  yes/no
+BrData$FamilySupport_supportHusband <- factor(BrData$X4.4.Did.you.receive.support.from.spouse.after.diagnosis.)
+BrData$FamilySupport_supportHusband <- factor(BrData$FamilySupport_supportHusband,
+                                                           levels=c("Yes","No"),
+                                                           labels = c("Yes","No"))
+summary(BrData$FamilySupport_supportHusband)
+x <- table(BrData$FamilySupport_supportHusband)
+x
+round(prop.table(x),4)*100
+
+#4.5 If no, did you receive negative behavior from spouse? (Yes/No)
+BrData$FamilySupport_supportHusband_negative <- factor(BrData$X4.5.If.no..did.you.receive.negative.behavior.from.spouse.)
+
+#4.6 Did you receive support from social circle?  yes/no
+BrData$FamilySupport_supportSocialCircle <- factor(BrData$X4.6.Did.you.receive.support.from.social.circle.)
+BrData$FamilySupport_supportSocialCircle <- factor(BrData$FamilySupport_supportSocialCircle,
+                                              levels=c("Yes","No"),
+                                              labels = c("Yes","No"))
+summary(BrData$FamilySupport_supportSocialCircle)
+x <- table(BrData$FamilySupport_supportSocialCircle)
+x
+round(prop.table(x),4)*100
+
+#Cancer Stage
+BrData$pathos_cancerStage <- factor(BrData$Stage.of.cancer)
+summary(BrData$pathos_cancerStage)
+BrData$pathos_cancerStage <- factor(BrData$pathos_cancerStage,levels=c("Stage I","Stage II","Stage III","Stage IV"),
+                                    labels = c("Stage I","Stage II","Stage III","Stage IV"))
+summary(BrData$pathos_cancerStage)
+x <- table(BrData$pathos_cancerStage)
+x
+round(prop.table(x),4)*100
 
 #5. Knowledge and practices of early detection of cancer
 
@@ -466,7 +532,7 @@ BrData$KPTotalCat <- factor(BrData$KPTotalCat,levels=c(0,1),labels = c('Good','L
 BrData$KPTotalCat
 
 summary(BrData$KPTotalCat)
-x <- table(BrData$DoctorVisitImmediately)
+x <- table(BrData$KPTotalCat)
 x
 round(prop.table(x),4)*100
 
@@ -476,165 +542,165 @@ c
 round(prop.table(c,1)*100,2)
 summary(c)
 
-model <- glm(relevel(factor(BrData$KPTotalCat), ref = "No")~ relevel(factor(BrData$AgeCat), ref = ">=60"),
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$AgeCat), ref = ">=60"),
              family=binomial(link='logit'),data=BrData)
 summary(model)
 exp(cbind(coef(model), confint(model)))
 
 
-c <- table(BrData$Division_cat ,BrData$PtD)
+c <- table(BrData$Division_cat ,BrData$KPTotalCat)
 c
 round(prop.table(c,1)*100,2)
 summary(c)
 
-model <- glm(relevel(factor(BrData$PtD), ref = "No")~ relevel(factor(BrData$Division_cat), ref = "Barisal"),
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$Division_cat), ref = "Barisal"),
              family=binomial(link='logit'),data=BrData)
 summary(model)
 exp(cbind(coef(model), confint(model)))
 
-c <- table(BrData$residence ,BrData$PtD)
+c <- table(BrData$residence ,BrData$KPTotalCat)
 c
 round(prop.table(c,1)*100,2)
 summary(c)
 
-model <- glm(relevel(factor(BrData$PtD), ref = "No")~ relevel(factor(BrData$residence), ref = "Urban"),
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$residence), ref = "Urban"),
              family=binomial(link='logit'),data=BrData)
 summary(model)
 exp(cbind(coef(model), confint(model)))
 
-c <- table(BrData$Marital_status ,BrData$PtD)
+c <- table(BrData$Marital_status ,BrData$KPTotalCat)
 c
 round(prop.table(c,1)*100,2)
 summary(c)
 
-model <- glm(relevel(factor(BrData$PtD), ref = "No")~ relevel(factor(BrData$Marital_status), ref = "Married"),
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$Marital_status), ref = "Married"),
              family=binomial(link='logit'),data=BrData)
 summary(model)
 exp(cbind(coef(model), confint(model)))
 
-c <- table(BrData$Patients_education ,BrData$PtD)
+c <- table(BrData$Patients_education ,BrData$KPTotalCat)
 c
 round(prop.table(c,1)*100,2)
 summary(c)
 
-model <- glm(relevel(factor(BrData$PtD), ref = "No")~ relevel(factor(BrData$Patients_education), ref = "Secondary/higher"),
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$Patients_education), ref = "Secondary/higher"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+round(exp(cbind(coef(model), confint(model))),2)
+
+c <- table(BrData$Husbands_education ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$Husbands_education), ref = "Secondary/higher"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+round(exp(cbind(coef(model), confint(model))),2)
+
+c <- table(BrData$Family_income ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$Family_income), ref = ">20,000"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+round(exp(cbind(coef(model), confint(model))),2)
+
+c <- table(BrData$PortableElectronicDevices ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$PortableElectronicDevices), ref = "Unchecked"),
              family=binomial(link='logit'),data=BrData)
 summary(model)
 exp(cbind(coef(model), confint(model)))
 
-c <- table(BrData$Husbands_education ,BrData$PtD)
+c <- table(BrData$MassMediaAccess ,BrData$KPTotalCat)
 c
 round(prop.table(c,1)*100,2)
 summary(c)
 
-model <- glm(relevel(factor(BrData$PtD), ref = "No")~ relevel(factor(BrData$Husbands_education), ref = "Secondary/higher"),
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$MassMediaAccess), ref = "Unchecked"),
              family=binomial(link='logit'),data=BrData)
 summary(model)
 exp(cbind(coef(model), confint(model)))
 
-c <- table(BrData$Family_income ,BrData$PtD)
+c <- table(BrData$symptom_Lump_br ,BrData$KPTotalCat)
 c
 round(prop.table(c,1)*100,2)
 summary(c)
 
-model <- glm(relevel(factor(BrData$PtD), ref = "No")~ relevel(factor(BrData$Family_income), ref = ">20,000"),
-             family=binomial(link='logit'),data=BrData)
-summary(model)
-exp(cbind(coef(model), confint(model)))
-
-c <- table(BrData$PortableElectronicDevices ,BrData$PtD)
-c
-round(prop.table(c,1)*100,2)
-summary(c)
-
-model <- glm(relevel(factor(BrData$PtD), ref = "No")~ relevel(factor(BrData$PortableElectronicDevices), ref = "Unchecked"),
-             family=binomial(link='logit'),data=BrData)
-summary(model)
-exp(cbind(coef(model), confint(model)))
-
-c <- table(BrData$MassMediaAccess ,BrData$PtD)
-c
-round(prop.table(c,1)*100,2)
-summary(c)
-
-model <- glm(relevel(factor(BrData$PtD), ref = "No")~ relevel(factor(BrData$MassMediaAccess), ref = "Unchecked"),
-             family=binomial(link='logit'),data=BrData)
-summary(model)
-exp(cbind(coef(model), confint(model)))
-
-c <- table(BrData$symptom_Lump_br ,BrData$PtD)
-c
-round(prop.table(c,1)*100,2)
-summary(c)
-
-model <- glm(relevel(factor(BrData$PtD), ref = "No")~ relevel(factor(BrData$symptom_Lump_br), ref = "Unchecked"),
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$symptom_Lump_br), ref = "Unchecked"),
              family=binomial(link='logit'),data=BrData)
 summary(model)
 exp(cbind(coef(model), confint(model)))
 
 
-c <- table(BrData$symptom_breastPain_br ,BrData$PtD)
+c <- table(BrData$symptom_breastPain_br ,BrData$KPTotalCat)
 c
 round(prop.table(c,1)*100,2)
 summary(c)
 
-model <- glm(relevel(factor(BrData$PtD), ref = "No")~ relevel(factor(BrData$symptom_breastPain_br), ref = "Unchecked"),
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$symptom_breastPain_br), ref = "Unchecked"),
              family=binomial(link='logit'),data=BrData)
 summary(model)
 exp(cbind(coef(model), confint(model)))
 
-c <- table(BrData$symptom_nippleDischarge_br ,BrData$PtD)
+c <- table(BrData$symptom_nippleDischarge_br ,BrData$KPTotalCat)
 c
 round(prop.table(c,1)*100,2)
 summary(c)
 
-model <- glm(relevel(factor(BrData$PtD), ref = "No")~ relevel(factor(BrData$symptom_nippleDischarge_br), ref = "Unchecked"),
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$symptom_nippleDischarge_br), ref = "Unchecked"),
              family=binomial(link='logit'),data=BrData)
 summary(model)
 exp(cbind(coef(model), confint(model)))
 
-c <- table(BrData$symptom_SkinChanges_br ,BrData$PtD)
+c <- table(BrData$symptom_SkinChanges_br ,BrData$KPTotalCat)
 c
 round(prop.table(c,1)*100,2)
 summary(c)
 
-model <- glm(relevel(factor(BrData$PtD), ref = "No")~ relevel(factor(BrData$symptom_SkinChanges_br), ref = "Unchecked"),
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$symptom_SkinChanges_br), ref = "Unchecked"),
              family=binomial(link='logit'),data=BrData)
 summary(model)
 exp(cbind(coef(model), confint(model)))
 
-c <- table(BrData$symptom_BonePain_br ,BrData$PtD)
+c <- table(BrData$symptom_BonePain_br ,BrData$KPTotalCat)
 c
 round(prop.table(c,1)*100,2)
 summary(c)
 
-model <- glm(relevel(factor(BrData$PtD), ref = "No")~ relevel(factor(BrData$symptom_BonePain_br), ref = "Unchecked"),
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$symptom_BonePain_br), ref = "Unchecked"),
              family=binomial(link='logit'),data=BrData)
 summary(model)
 exp(cbind(coef(model), confint(model)))
 
-c <- table(BrData$KP_checkBreast ,BrData$PtD)
+c <- table(BrData$KP_checkBreast ,BrData$KPTotalCat)
 c
 round(prop.table(c,1)*100,2)
 summary(c)
 
-model <- glm(relevel(factor(BrData$PtD), ref = "No")~ relevel(factor(BrData$KP_checkBreast), ref = "No"),
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$KP_checkBreast), ref = "No"),
              family=binomial(link='logit'),data=BrData)
 summary(model)
 exp(cbind(coef(model), confint(model)))
 
-c <- table(BrData$Hist_br ,BrData$PtD)
+c <- table(BrData$Hist_br ,BrData$KPTotalCat)
 c
 round(prop.table(c,1)*100,2)
 summary(c)
 
-model <- glm(relevel(factor(BrData$PtD), ref = "No")~ relevel(factor(BrData$Hist_br), ref = "No"),
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$Hist_br), ref = "No"),
              family=binomial(link='logit'),data=BrData)
 summary(model)
 exp(cbind(coef(model), confint(model)))
 
 #adjusted model
-model <- glm(relevel(factor(BrData$PtD), ref = "No")~ relevel(factor(BrData$Patients_education), ref = "Secondary/higher")
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$Patients_education), ref = "Secondary/higher")
              + relevel(factor(BrData$Family_income), ref = ">20,000")
              +relevel(factor(BrData$PortableElectronicDevices), ref = "Unchecked")
              +relevel(factor(BrData$MassMediaAccess), ref = "Unchecked")
@@ -709,69 +775,6 @@ binorm.plot1
 
 
 
-
-
-#3.1 What medical centerdid you visit before coming to the cancer treatment centre?  (Select ONE)
-BrData$treatmentCenter_other <- factor(BrData$If.other..please.specify.1)
-
-#3.1 Do you remember the date when you first visited a medical center? 
-BrData$treatmentCenter_visitDate <- BrData$X3.2.Do.you.remember.the.date.when.you.first.visited.a.medical.center..Enter.the.date.
-
-#3.2 Have you tried to treat at home or taken alternative remedy for this problem? Yes/No
-BrData$treatmenthome_alternativeRemedy <- factor(BrData$X3.3.Have.you.tried.to.treat.at.home.or.taken.alternative.remedy.for.this.problem.)
-summary(BrData$treatmenthome_alternativeRemedy)
-BrData$treatmenthome_alternativeRemedy <- factor(BrData$treatmenthome_alternativeRemedy,levels=c("No","Yes"),labels = c("No","Yes"))
-summary(BrData$treatmenthome_alternativeRemedy)
-
-x <- table(BrData$treatmenthome_alternativeRemedy)
-x
-round(prop.table(x),4)*100
-
-#3.2 Have you tried to treat at home or taken alternative remedy for this problem? Yes/No
-BrData$treatmenthome_alternativeRemedy_specify <- factor(BrData$X3.3.1.if.yes..which.one...)
-
-#3.2 Have you tried to treat at home or taken alternative remedy for this problem? Yes/No
-BrData$treatmenthome_alternativeRemedy_specify_other <- factor(BrData$X3.3.1.1.Other.alternative.remedy)
-
-#Family a support  
-#4.1 Who is the person you talked first about your health problem? (Select ONE)
-BrData$FamilySupport_firstTalked <- factor(BrData$X4.1.Who.is.the.person.you.talked.first.about.your.health.problem.)
-
-#4.1 Who is the person you talked first about your health problem? (Select ONE)
-BrData$FamilySupport_firstTalked_other <- factor(BrData$If.other..please.specify.2)
-
-#4.2 Who recommended you to consult with a doctor?  (Select ONE)
-BrData$FamilySupport_WhoRecommendDoc <- factor(BrData$X4.2.Who.recommended.you.to.consult.with.a.doctor.)
-
-#4.2 Who recommended you to consult with a doctor?  (Select ONE)
-BrData$FamilySupport_WhoRecommendDoc_other <- factor(BrData$If.other..please.specify.3)
-
-#4.3 Did you fear or uncomfortable to tell about the problem to your spouse? Yes/No
-BrData$FamilySupport_uncomfortabletoShareHusband <- factor(BrData$X4.3.Did.you.fear.or.uncomfortable.to.tell.about.the.problem.to.your.spouse.)
-
-#4.4 Did you receive support from spouse after diagnosis?  yes/no
-BrData$FamilySupport_supportHusband <- factor(BrData$X4.4.Did.you.receive.support.from.spouse.after.diagnosis.)
-
-#4.5 If no, did you receive negative behavior from spouse? (Yes/No)
-BrData$FamilySupport_supportHusband_negative <- factor(BrData$X4.5.If.no..did.you.receive.negative.behavior.from.spouse.)
-
-#4.6 Did you receive support from social circle?  yes/no
-BrData$FamilySupport_supportSocialCircle <- factor(BrData$X4.6.Did.you.receive.support.from.social.circle.)
-
-#6. Pathological status after diagnosis of breast cancer 
-#Lump Category
-BrData$pathos_lumpCat <- factor(BrData$Lump.category)
-
-#Cancer Stage
-BrData$pathos_cancerStage <- factor(BrData$Stage.of.cancer)
-summary(BrData$pathos_cancerStage)
-BrData$pathos_cancerStage <- factor(BrData$pathos_cancerStage,levels=c("Stage I","Stage II","Stage III","Stage IV"),
-                                    labels = c("Stage I","Stage II","Stage III","Stage IV"))
-summary(BrData$pathos_cancerStage)
-
-x <- table(BrData$pathos_cancerStage)
-x
-round(prop.table(x),4)*100
 
 describeBy(BrData$PtD_weeks, BrData$pathos_cancerStage)
 stat.desc(BrData$PtD_weeks)
