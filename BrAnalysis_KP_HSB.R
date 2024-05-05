@@ -820,25 +820,147 @@ model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrD
 summary(model)
 exp(cbind(coef(model), confint(model)))
 
-c <- table(BrData$Hist_br ,BrData$KPTotalCat)
+c <- table(BrData$discomfort_breastPain_br ,BrData$KPTotalCat)
 c
 round(prop.table(c,1)*100,2)
 summary(c)
 
-model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$Hist_br), ref = "No"),
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$discomfort_breastPain_br), ref = "No"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+c <- table(BrData$discomfort_Itching_br ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$discomfort_Itching_br), ref = "No"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+
+c <- table(BrData$discomfort_Lump_br ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$discomfort_Lump_br), ref = "No"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+c <- table(BrData$discomfort_liquidBlood_br ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$discomfort_liquidBlood_br), ref = "No"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+c <- table(BrData$discomfort_shape_br ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$discomfort_shape_br), ref = "No"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+c <- table(BrData$discomfort_skinColor_br ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$discomfort_skinColor_br), ref = "No"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+c <- table(BrData$discomfort_skinUlcer_br ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$discomfort_skinUlcer_br), ref = "No"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+
+c <- table(BrData$FamilySupport_firstTalked ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$FamilySupport_firstTalked), ref = "Other"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+c <- table(BrData$FamilySupport_WhoRecommendDoc ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$FamilySupport_WhoRecommendDoc), ref = "Other"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+c <- table(BrData$FamilySupport_uncomfortabletoShareHusband ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$FamilySupport_uncomfortabletoShareHusband), ref = "No"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+c <- table(BrData$FamilySupport_supportHusband ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$FamilySupport_supportHusband), ref = "No"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+c <- table(BrData$FamilySupport_supportSocialCircle ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$FamilySupport_supportSocialCircle), ref = "No"),
              family=binomial(link='logit'),data=BrData)
 summary(model)
 exp(cbind(coef(model), confint(model)))
 
 #adjusted model
-model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$Patients_education), ref = "Secondary/higher")
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$Division_cat), ref = "Barisal")
+             + relevel(factor(BrData$Patients_education), ref = "Secondary/higher")
+             + relevel(factor(BrData$Husbands_education), ref = "Secondary/higher")
              + relevel(factor(BrData$Family_income), ref = ">20,000")
-             +relevel(factor(BrData$PortableElectronicDevices), ref = "Unchecked")
-             +relevel(factor(BrData$MassMediaAccess), ref = "Unchecked")
-             +relevel(factor(BrData$symptom_breastPain_br), ref = "Unchecked"),
+             + relevel(factor(BrData$remedy), ref = "No")
+             + relevel(factor(BrData$TD), ref = "No")
+             + relevel(factor(BrData$PortableElectronicDevices), ref = "Unchecked")
+             + relevel(factor(BrData$socialmedia_news), ref = "Unchecked")
+             + relevel(factor(BrData$symptom_Lump_br), ref = "Unchecked")
+             + relevel(factor(BrData$symptom_BonePain_br), ref = "Unchecked")
+             + relevel(factor(BrData$AnySymptoms), ref = "No")
+             + relevel(factor(BrData$pathos_cancerStage), ref = "Stage IV")
+             + relevel(factor(BrData$discomfort_breastPain_br), ref = "No")
+             + relevel(factor(BrData$FamilySupport_firstTalked), ref = "Other")
+             + relevel(factor(BrData$FamilySupport_WhoRecommendDoc), ref = "Other"),
              family=binomial(link='logit'),data=BrData)
 summary(model)
-exp(cbind(coef(model), confint(model)))
+round(exp(cbind(coef(model), confint(model))),2)
 
 
 require(foreign)
