@@ -198,10 +198,6 @@ x <- table(BrData$MassMediaAccess)
 x
 round(prop.table(x),4)*100
 
-
-
-
-
 #Lump
 BrData$symptom_Lump_br <- factor(BrData$X1.3.2.What.was.the.first.symptom.noticed...choice.Lump.)
 BrData$symptom_Lump_br
@@ -248,6 +244,12 @@ BrData$symptom_Others_br <- factor(BrData$X1.3.2.What.was.the.first.symptom.noti
 
 summary(BrData$symptom_Others_br)
 x <- table(BrData$symptom_Others_br)
+x
+round(prop.table(x),4)*100
+
+#anysymptoms
+summary(BrData$AnySymptoms)
+x <- table(BrData$AnySymptoms)
 x
 round(prop.table(x),4)*100
 
@@ -354,8 +356,8 @@ BrData$firstHF <- factor(BrData$First.medical.center)
 BrData$firstHF <- factor(BrData$First.medical.center,
                          levels=c("General hospital","Others","Pharmacy",
                                   "Private clinic/hospital","Upazila health complex"),
-                         labels = c("General hospital","Others","Pharmacy",
-                                    "Private clinic/hospital","Upazila health complex"))
+                         labels = c("General hospital","Others","Others",
+                                    "Private clinic/hospital","General hospital"))
 summary(BrData$firstHF)
 x <- table(BrData$firstHF)
 x
@@ -608,6 +610,72 @@ model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrD
 summary(model)
 round(exp(cbind(coef(model), confint(model))),2)
 
+c <- table(BrData$firstHF,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$firstHF), ref = "Others"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+
+c <- table(BrData$remedy,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$remedy), ref = "No"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+
+c <- table(BrData$TD,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$TD), ref = "No"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+
+c <- table(BrData$PortableElectronicDevices_mobile ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$PortableElectronicDevices_mobile), ref = "Unchecked"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+
+c <- table(BrData$PortableElectronicDevices_smartphone ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$PortableElectronicDevices_smartphone), ref = "Unchecked"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+
+c <- table(BrData$PortableElectronicDevices_pc ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$PortableElectronicDevices_pc), ref = "Unchecked"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+
 c <- table(BrData$PortableElectronicDevices ,BrData$KPTotalCat)
 c
 round(prop.table(c,1)*100,2)
@@ -617,6 +685,38 @@ model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrD
              family=binomial(link='logit'),data=BrData)
 summary(model)
 exp(cbind(coef(model), confint(model)))
+
+
+c <- table(BrData$socialmedia_social ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$socialmedia_social), ref = "Unchecked"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+c <- table(BrData$socialmedia_TV ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$socialmedia_TV), ref = "Unchecked"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+c <- table(BrData$socialmedia_news ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$socialmedia_news), ref = "Unchecked"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
 
 c <- table(BrData$MassMediaAccess ,BrData$KPTotalCat)
 c
@@ -679,12 +779,43 @@ model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrD
 summary(model)
 exp(cbind(coef(model), confint(model)))
 
-c <- table(BrData$KP_checkBreast ,BrData$KPTotalCat)
+c <- table(BrData$symptom_Others_br,BrData$KPTotalCat)
 c
 round(prop.table(c,1)*100,2)
 summary(c)
 
-model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$KP_checkBreast), ref = "No"),
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$symptom_Others_br), ref = "Unchecked"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+c <- table(BrData$AnySymptoms,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$AnySymptoms), ref = "No"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+c <- table(BrData$pathos_cancerStage,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$pathos_cancerStage), ref = "Stage IV"),
+             family=binomial(link='logit'),data=BrData)
+summary(model)
+exp(cbind(coef(model), confint(model)))
+
+
+c <- table(BrData$discomfort_armPain_br ,BrData$KPTotalCat)
+c
+round(prop.table(c,1)*100,2)
+summary(c)
+
+model <- glm(relevel(factor(BrData$KPTotalCat), ref = "Low")~ relevel(factor(BrData$discomfort_armPain_br), ref = "No"),
              family=binomial(link='logit'),data=BrData)
 summary(model)
 exp(cbind(coef(model), confint(model)))
