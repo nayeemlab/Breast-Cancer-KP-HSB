@@ -1004,133 +1004,74 @@ s1 <- sd(M.ex[D.ex == 1])
 s0 <- sd(M.ex[D.ex == 0])
 c.ex <- seq(min(M.ex), max(M.ex), length.out = 300)
 
+
 binorm.roc <- data.frame(c = c.ex, 
                          FPF = pnorm((mu0 - c.ex)/s0), 
                          TPF = pnorm((mu1 - c.ex)/s1)
 )
 library(survivalROC)
 library(plotROC)
-binorm.plot1 <- ggplot(binorm.roc, aes(x = FPF, y = TPF, label = c)) + 
+binorm.plot <- ggplot(binorm.roc, aes(x = FPF, y = TPF, label = c)) + 
   geom_roc(stat = "identity") +  
-  ggtitle("ROC Curves (Model 1)") + 
-  annotate("text", x = .75, y = .50, 
-           label = paste("AUC =", round(calc_auc(binorm.plot)$AUC*(-1)*100, 2),"%")) +
+  ggtitle("ROC Curves (Adjusted Model)")+
   #  scale_x_continuous("False positive fraction (1 - Specificity)", breaks = seq(0, 1, by = .1))+
   #  scale_y_continuous("True positive fraction (Sensitivity)", breaks = seq(0, 1, by = .1)) 
   style_roc(theme = theme_grey, xlab = "False positive fraction (1 - Specificity)", ylab = "True positive fraction (Sensitivity)")
-binorm.plot1 <- binorm.plot1 + 
+binorm.plot1 <- binorm.plot + 
+  theme(plot.title = element_text(size = 12,hjust=0.5),
+        legend.title = element_text(size=12),
+        legend.text = element_text(size=12),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 12))
+binorm.plot1
+
+
+c <- table(BrData$FamilySupport_uncomfortabletoShareHusband, BrData$Division_cat)
+c
+round(prop.table(c,2)*100,2)
+summary(c)
+
+#graph2
+q <- readShapeSpatial('bgd_admbnda_adm1_bbs_20180410.shp')
+q_1 <- fortify(q)
+
+
+USH <- read.csv("USH.csv")
+
+q_1$prev <- ifelse(q_1$id==0,USH$Percentage[1],
+            ifelse(q_1$id==1,USH$Percentage[2],
+            ifelse(q_1$id==2,USH$Percentage[3],
+            ifelse(q_1$id==3,USH$Percentage[4],
+            ifelse(q_1$id==4,USH$Percentage[5],
+            ifelse(q_1$id==5,USH$Percentage[6],
+            ifelse(q_1$id==6,USH$Percentage[7],
+                   USH$Percentage[8])))))))
+
+
+centroids.df <- as.data.frame(coordinates(q))
+names(centroids.df) <- c("Longitude", "Latitude")
+centroids.df$name <- c('    Barisal',
+                       'Chittagong\n',
+                       'Dhaka','Khulna\n',
+                       'Mymensingh\n',
+                       'Rajshahi',
+                       'Rangpur\n','Sylhet')
+
+
+y <- ggplot(q_1, aes(x=long, y=lat)) +geom_polygon(aes(group=group,fill=prev),colour= "lightgrey")+coord_map()+
+  geom_text(data=centroids.df,aes(label = name, x = Longitude, y = Latitude),color='black',size=4)+
+  ggtitle("ROC Curves (Adjusted Model)")+
+  scale_fill_distiller(name='Percentage (%)',palette ="Blues", direction=1)+
   theme(plot.title = element_text(size = 16,hjust=0.5),
         legend.title = element_text(size=16),
         legend.text = element_text(size=16),
         axis.text = element_text(size = 16),
         axis.title = element_text(size = 16))
-binorm.plot1
-
-
-
-
-describeBy(BrData$PtD_weeks, BrData$pathos_cancerStage)
-stat.desc(BrData$PtD_weeks)
-kruskal.test(PtD_weeks ~ pathos_cancerStage,BrData)
-
-
-describeBy(BrData$PrD_weeks, BrData$pathos_cancerStage)
-stat.desc(BrData$PrD_weeks)
-kruskal.test(PrD_weeks ~ pathos_cancerStage,BrData)
-
-describeBy(BrData$TD_weeks, BrData$pathos_cancerStage)
-stat.desc(BrData$PtD_weeks)
-kruskal.test(TD_weeks ~ pathos_cancerStage,BrData)
-
-#Tumer Size
-BrData$pathos_tumerSize <- factor(BrData$Size.of.tumor..cm.)
-
-
-#Figure 1
-library(ggplot2)
-library("stringr") 
-
-df <- data.frame(Discomfort=c("Breast pain", "Lump", "Arm pain","Itching", "Shape changes", "Skin changes","Ulcer or sore skin", "Nipple discharge"),
-                 Percentage=c(52.06, 45.86, 34.81, 33.82, 31.36, 12.72, 11.50, 12.13))
-head(df)
-
-b<-ggplot(data=df, aes(x=Discomfort, y=Percentage)) +
-  geom_bar(stat="identity", fill="pink3")+
-  theme_minimal()  +
-  scale_fill_brewer() + geom_text(aes(label=Percentage), vjust=-0.5, color="black",
-                                  position = position_dodge(1), size=5)+
-  xlab("Physical Presentation") + ylab("Percentage of Patients") + 
-  theme(axis.text = element_text(size = 15,angle = 0, vjust = 1, hjust=0.5),
-        axis.title = element_text(size = 15),
-        plot.title = element_text(size = 15),
-        legend.title = element_text(size=15),
-        legend.text = element_text(size=15))
-b <- b +scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
-b
-library(gridExtra)
-tiff("Discomfort.tiff", units="in", width=10, height=8, res=300)
-gridExtra::grid.arrange(b, nrow=1, ncol=1)
+y
+tiff("Map.tiff", units="in", width=6, height=6, res=300)
+gridExtra::grid.arrange(x,y,ncol=2)
 dev.off()
 
 
-c <- table(BrData$pathos_cancerStage ,BrData$PtD)
-c
-round(prop.table(c,2)*100,2)
 
-c <- table(BrData$pathos_cancerStage ,BrData$PrD)
-c
-round(prop.table(c,2)*100,2)
-
-c <- table(BrData$pathos_cancerStage ,BrData$TD)
-c
-round(prop.table(c,2)*100,2)
-
-
-library(ggplot2)
-library(tibble)
-library(scales)
-library(ggrepel)
-library(forcats)
-
-df = data.frame(type = c(" Patient Delay"," Patient Delay"," Patient Delay"," Patient Delay",
-                         " Provider Delay"," Provider Delay"," Provider Delay"," Provider Delay",
-                         "Diagnosis Delay","Diagnosis Delay","Diagnosis Delay","Diagnosis Delay"), 
-                Stages = c("Stage I","Stage II","Stage III","Stage IV",
-                              "Stage I","Stage II","Stage III","Stage IV",
-                              "Stage I","Stage II","Stage III","Stage IV"), 
-                value = c(2.02, 44.45, 51.53, 2.01,
-                          2.48, 52.75, 41.79, 2.99, 
-                          1.43, 48.57, 47.86, 2.14))
-
-
-library(ggplot2)
-SAC <- ggplot(df, aes(x = factor(1), y = -value, fill = Stages)) + 
-  geom_bar(color = "black", stat = "identity") +
-  geom_text(aes(x=1.55, label=paste0(round(value), "%")),cex=2.1,
-            position = position_stack(vjust=0.5)) +
-  scale_x_discrete(NULL, expand = c(0,0)) +
-  scale_y_continuous(NULL, expand = c(0,0)) + 
-  coord_polar(theta = "y") +
-  facet_wrap(~type) +
-  theme_void()+ theme_bw()+
-  xlab(" ") + ylab("") + ggtitle("")+
-  theme(        legend.position= "bottom",
-                plot.title = element_text(size = 15,hjust=0.5),
-                legend.title = element_text(size=15),
-                legend.text = element_text(size=15),
-                axis.title.x=element_blank(),
-                axis.text.x=element_blank(),
-                axis.ticks.x=element_blank(),
-                axis.title.y=element_blank(),
-                axis.text.y=element_blank(),
-                axis.ticks.y=element_blank()
-                
-  )
-SAC
-
-library(gridExtra)
-tiff("Stages.tiff", units="in", width=8, height=4, res=300)
-gridExtra::grid.arrange(SAC)
-dev.off()
-
-
+ 
