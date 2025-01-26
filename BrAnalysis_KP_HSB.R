@@ -1058,18 +1058,99 @@ centroids.df$name <- c('    Barisal',
                        'Rangpur\n','Sylhet')
 
 
+x <- ggplot(q_1, aes(x=long, y=lat)) +geom_polygon(aes(group=group,fill=prev),colour= "lightgrey")+coord_map()+
+  geom_text(data=centroids.df,aes(label = name, x = Longitude, y = Latitude),color='black',size=4)+
+  ggtitle("Comfortable to talk with their spouse")+
+  scale_fill_distiller(name='Percentage (%)',palette ="Blues", direction=1)+
+  theme(plot.title = element_text(size = 10,hjust=0.5),
+        legend.title = element_text(size=10),
+        legend.text = element_text(size=10))
+x
+
+
+c <- table(BrData$FamilySupport_supportHusband, BrData$Division_cat)
+c
+round(prop.table(c,2)*100,2)
+summary(c)
+
+#graph3
+q <- readShapeSpatial('bgd_admbnda_adm1_bbs_20180410.shp')
+q_1 <- fortify(q)
+
+
+HS <- read.csv("HS.csv")
+
+q_1$prev <- ifelse(q_1$id==0,HS$Percentage[1],
+                   ifelse(q_1$id==1,HS$Percentage[2],
+                          ifelse(q_1$id==2,HS$Percentage[3],
+                                 ifelse(q_1$id==3,HS$Percentage[4],
+                                        ifelse(q_1$id==4,HS$Percentage[5],
+                                               ifelse(q_1$id==5,HS$Percentage[6],
+                                                      ifelse(q_1$id==6,HS$Percentage[7],
+                                                             HS$Percentage[8])))))))
+
+
+centroids.df <- as.data.frame(coordinates(q))
+names(centroids.df) <- c("Longitude", "Latitude")
+centroids.df$name <- c('    Barisal',
+                       'Chittagong\n',
+                       'Dhaka','Khulna\n',
+                       'Mymensingh\n',
+                       'Rajshahi',
+                       'Rangpur\n','Sylhet')
+
+
 y <- ggplot(q_1, aes(x=long, y=lat)) +geom_polygon(aes(group=group,fill=prev),colour= "lightgrey")+coord_map()+
   geom_text(data=centroids.df,aes(label = name, x = Longitude, y = Latitude),color='black',size=4)+
-  ggtitle("ROC Curves (Adjusted Model)")+
+  ggtitle("Receive support from spouse after diagnosis")+
   scale_fill_distiller(name='Percentage (%)',palette ="Blues", direction=1)+
-  theme(plot.title = element_text(size = 16,hjust=0.5),
-        legend.title = element_text(size=16),
-        legend.text = element_text(size=16),
-        axis.text = element_text(size = 16),
-        axis.title = element_text(size = 16))
+  theme(plot.title = element_text(size = 10,hjust=0.5),
+        legend.title = element_text(size=10),
+        legend.text = element_text(size=10))
 y
-tiff("Map.tiff", units="in", width=6, height=6, res=300)
-gridExtra::grid.arrange(x,y,ncol=2)
+
+
+
+c <- table(BrData$FamilySupport_supportSocialCircle, BrData$Division_cat)
+c
+round(prop.table(c,2)*100,2)
+summary(c)
+
+#graph3
+q <- readShapeSpatial('bgd_admbnda_adm1_bbs_20180410.shp')
+q_1 <- fortify(q)
+
+
+SC <- read.csv("SC.csv")
+
+q_1$prev <- ifelse(q_1$id==0,SC$Percentage[1],
+                   ifelse(q_1$id==1,SC$Percentage[2],
+                          ifelse(q_1$id==2,SC$Percentage[3],
+                                 ifelse(q_1$id==3,SC$Percentage[4],
+                                        ifelse(q_1$id==4,SC$Percentage[5],
+                                               ifelse(q_1$id==5,SC$Percentage[6],
+                                                      ifelse(q_1$id==6,SC$Percentage[7],
+                                                             SC$Percentage[8])))))))
+centroids.df <- as.data.frame(coordinates(q))
+names(centroids.df) <- c("Longitude", "Latitude")
+centroids.df$name <- c('    Barisal',
+                       'Chittagong\n',
+                       'Dhaka','Khulna\n',
+                       'Mymensingh\n',
+                       'Rajshahi',
+                       'Rangpur\n','Sylhet')
+
+z <- ggplot(q_1, aes(x=long, y=lat)) +geom_polygon(aes(group=group,fill=prev),colour= "lightgrey")+coord_map()+
+  geom_text(data=centroids.df,aes(label = name, x = Longitude, y = Latitude),color='black',size=4)+
+  ggtitle("Receive support from social circle")+
+  scale_fill_distiller(name='Percentage (%)',palette ="Blues", direction=1)+
+  theme(plot.title = element_text(size = 10,hjust=0.5),
+        legend.title = element_text(size=10),
+        legend.text = element_text(size=10))
+z
+
+tiff("Map.tiff", units="in", width=12, height=6, res=300)
+gridExtra::grid.arrange(x,y,z,ncol=3)
 dev.off()
 
 
